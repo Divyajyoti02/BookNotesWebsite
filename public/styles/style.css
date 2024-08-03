@@ -1,0 +1,57 @@
+body {
+    font-family: "Libre Caslon Text", serif;
+}
+
+.color-4 {
+    color: #F4D9D0;
+}
+
+.bg-1 {
+    background-color: #921A40;
+}
+
+.bg-4 {
+    background-color: #F4D9D0;
+    color: #921A40;
+    border-color: #921A40;
+}
+
+.button-bg-4 {
+    background-color: #F4D9D0;
+    color: #921A40;
+    border-color: #921A40;
+    transition-duration: 0.2s;
+}
+
+.button-bg-4:hover {
+    background-color: #D9ABAB;
+    color: #921A40;
+    border-color: #921A40;
+    transition-duration: 0.2s;
+}
+
+.button-bg-4:focus, .button-bg-4:active {
+    background-color: #C75B7A;
+    color: #F4D9D0;
+    border-color: #F4D9D0;
+    transition-duration: 0.2s;
+}
+
+.padding-lr {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.margin-left-tiny {
+    margin-left: 20px !important;
+}
+
+.link-4, .link-4:active {
+    color: #F4D9D0;
+    transition-duration: 0.2s;
+}
+
+.link-4:hover {
+    color: #D9ABAB;
+    transition-duration: 0.2s;
+}
