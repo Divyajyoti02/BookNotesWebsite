@@ -1,5 +1,36 @@
 <%- include("partials/header.ejs") %>
 
-Working...
+<div id="box">Loading...</div>
+
+<script>
+    const queryBox = document.getElementById('search');
+    const autocomBox = document.getElementById('autocom-box');
+    const autocomItems = document.querySelectorAll('#autocom-box li');
+
+    let mouseOnAutocomBox = false;
+
+    autocomBox.addEventListener('mouseover', (event) => {
+        mouseOnAutocomBox = true;
+    });
+    autocomBox.addEventListener('mouseout', (event) => {
+        mouseOnAutocomBox = false;}
+    );
+    
+    <% if ( queryText  != "") { %>
+        queryBox.focus();
+    <% } %>
+
+    document.addEventListener("click", (event) => {
+        if (document.activeElement !== queryBox && !mouseOnAutocomBox) {autocomBox.style.display = "none";}
+    });
+
+    queryBox.value = "<%= decodeURIComponent(queryText) %>";
+    queryBox.addEventListener('keyup', (event) => {location.href = `/?q=${encodeURIComponent(queryBox.value)}`;});
+    queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
+
+    for (let i = 0; i < autocomItems.length; i++) {
+        autocomItems[i].addEventListener("click", (event) => {console.log(event);});
+    }
+</script>
 
 <%- include("partials/footer.ejs") %>

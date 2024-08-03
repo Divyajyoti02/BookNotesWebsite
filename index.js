@@ -27,8 +27,18 @@ const __dirname = dirname(__filename);
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-    res.render("index.ejs", {title: "Book Notes", activeTab: "home"});
+app.get("/", async (req, res) => {
+    let queryText = "";
+    if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
+    if (queryText !== "") {
+        let response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+        // console.log(response.data.docs[0].cover_i);
+        res.render("index.ejs", {
+            title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: response.data.docs
+        });
+    } else {
+        res.render("index.ejs", {title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: []});
+    }
 });
 
 app.listen(port, () => {

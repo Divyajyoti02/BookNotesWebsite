@@ -1,5 +1,6 @@
 body {
     font-family: "Libre Caslon Text", serif;
+    background-color: #FCF7F5;
 }
 
 .color-4 {
@@ -54,4 +55,44 @@ body {
 .link-4:hover {
     color: #D9ABAB;
     transition-duration: 0.2s;
+}
+
+.link-1, .link-1:active {
+    color: #921A40;
+    transition-duration: 0.2s;
+}
+
+.link-1:hover {
+    color: #C75B7A;
+    transition-duration: 0.2s;
+}
+
+#search {
+    width: 250px;
+}
+
+#autocom-box {
+    color: black;
+    position: absolute;
+    background-color: white;
+    min-width: 250px;
+}
+
+.no-bullet {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.no-bullet > li {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+}
+
+.no-bullet > li:hover {
+    background-color: lightgray;
 }
