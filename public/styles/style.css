@@ -3,6 +3,30 @@ body {
     background-color: #FCF7F5;
 }
 
+#page-container {
+    position: relative;
+    min-height: 100vh;
+}
+  
+#content-wrap {
+    padding-bottom: 5rem;    /* Footer height */
+}
+  
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 5rem;            /* Footer height */
+}
+
+.color-1 {
+    color: #921A40;
+}
+
+.color-2 {
+    color: #C75B7A;
+}
+
 .color-4 {
     color: #F4D9D0;
 }
@@ -41,6 +65,15 @@ body {
 .padding-lr {
     padding-left: 50px;
     padding-right: 50px;
+}
+
+.margin {
+    margin: 50px;
+}
+
+.margin-lr {
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 .margin-left-tiny {
