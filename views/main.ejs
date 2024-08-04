@@ -14,10 +14,17 @@
 </div>
 
 <script>
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+    
     document.addEventListener("DOMContentLoaded", () => {
         const queryBox = document.getElementById('search');
         const autocomBox = document.getElementById('autocom-box');
         const autocomItems = document.querySelectorAll('#autocom-box li');
+        const queryResultsCoverIdClient = JSON.parse('<%= queryResultsCoverIdJSON %>');
 
         let mouseOnAutocomBox = false;
 
@@ -28,7 +35,7 @@
             mouseOnAutocomBox = false;
         });
         
-        <% if ( queryText  != "") { %>
+        <% if ( queryText != "") { %>
             queryBox.focus();
         <% } %>
 
@@ -41,10 +48,11 @@
         queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
 
         for (let i = 0; i < autocomItems.length; i++) {
-            autocomItems[i].addEventListener("click", (event) => {console.log(event);});
+            autocomItems[i].addEventListener("click", (event) => {
+                location.href = `/search?cover_id=${queryResultsCoverIdClient[i]}`;
+            });
         }
     });
-    
 </script>
 
 <%- include("partials/footer.ejs") %>
