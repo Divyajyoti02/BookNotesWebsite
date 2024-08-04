@@ -31,19 +31,16 @@ app.get("/", async (req, res) => {
     let queryText = "";
     let response = await db.query("SELECT * FROM notes;");
     let noteEntries = response.rows;
+    let queryResults = [];
     if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
     if (queryText !== "") {
         response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-        // console.log(response.data.docs[0].cover_i);
-        res.render("index.ejs", {
-            title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: response.data.docs, 
-            noteEntries: noteEntries
-        });
-    } else {
-        res.render("index.ejs", {
-            title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: [], noteEntries: noteEntries
-        });
+        queryResults = response.data.docs
+        // console.log(queryResults[0].cover_i);
     }
+    res.render("main.ejs", {
+        title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: queryResults, noteEntries: noteEntries
+    });
 });
 
 app.listen(port, () => {
