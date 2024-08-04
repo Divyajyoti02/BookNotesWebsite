@@ -66,8 +66,6 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/query", async (req, res) => {
-    // console.log(queryResultsGlobal);
-    // console.log(req.query.idx);
     targetBook = queryResultsGlobal[req.query.idx];
     res.redirect("/entry");
 });
