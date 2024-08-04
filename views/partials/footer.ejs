@@ -14,7 +14,6 @@
                 const queryBox = document.getElementById('search');
                 const autocomBox = document.getElementById('autocom-box');
                 const autocomItems = document.querySelectorAll('#autocom-box li');
-                const queryResultsCoverIdClient = JSON.parse('<%= queryResultsCoverIdJSON %>');
         
                 let mouseOnAutocomBox = false;
         
@@ -34,12 +33,14 @@
                 });
         
                 queryBox.value = "<%= decodeURIComponent(queryText) %>";
-                queryBox.addEventListener('keyup', (event) => {location.href = `/?q=${encodeURIComponent(queryBox.value)}`;});
+                queryBox.addEventListener('keyup', (event) => {
+                    location.href = location.href + `?q=${encodeURIComponent(queryBox.value)}`;
+                });
                 queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
         
                 for (let i = 0; i < autocomItems.length; i++) {
                     autocomItems[i].addEventListener("click", (event) => {
-                        location.href = `/search?cover_id=${queryResultsCoverIdClient[i]}`;
+                        location.href = `/query?idx=${i}`;
                     });
                 }
             });

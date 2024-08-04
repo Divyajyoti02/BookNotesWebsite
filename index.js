@@ -6,6 +6,22 @@ import { config } from "dotenv";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+function isEmpty(obj) {
+    for (const prop in obj) {if (Object.hasOwn(obj, prop)) {return false;}}
+    return true;
+}
+
+class Book {
+    constructor(book) {
+        this.book_id = book.cover_i;
+        this.title = book.title;
+        this.isbn = book.isbn;
+    }
+}
+
+let queryResultsGlobal = [];
+let targetBook = {};
+
 config();
 
 const app = express();
@@ -32,18 +48,55 @@ app.get("/", async (req, res) => {
     let response = await db.query("SELECT * FROM notes;");
     let noteEntries = response.rows;
     let queryResults = [];
-    let queryResultsCoverId = [];
+
     if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
     if (queryText !== "") {
         response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-        queryResults = response.data.docs
-        // console.log(queryResults[0].cover_i);
+        response.data.docs.forEach((elem) => {
+            queryResults.push(new Book(elem));
+        });
     }
-    queryResults.forEach((elem) => {queryResultsCoverId.push(elem.cover_i);});
+
+    queryResultsGlobal = queryResults;
+
     res.render("main.ejs", {
-        title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: queryResults, 
-        queryResultsCoverIdJSON: JSON.stringify(queryResultsCoverId), noteEntries: noteEntries
+        title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
+        noteEntries: noteEntries
     });
+});
+
+app.get("/query", async (req, res) => {
+    // console.log(queryResultsGlobal);
+    // console.log(req.query.idx);
+    targetBook = queryResultsGlobal[req.query.idx];
+    res.redirect("/entry");
+});
+
+app.get("/entry", async (req, res) => {
+    if (isEmpty(targetBook)) {
+        res.redirect("/");
+    } else {
+        let queryText = "";
+        let response = await db.query("SELECT * FROM notes;");
+        let noteEntries = response.rows;
+        let queryResults = [];
+        let queryResultsKey = [];
+
+        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
+        if (queryText !== "") {
+            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+            response.data.docs.forEach((elem) => {
+                queryResults.push(new Book(elem));
+            });
+        }
+
+        queryResultsGlobal = queryResults;
+
+        res.render("entry.ejs", {
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            noteEntries: noteEntries
+        });
+    }
 });
 
 app.listen(port, () => {
