@@ -13,46 +13,4 @@
     <% } %>
 </div>
 
-<script>
-    function decodeHtml(html) {
-        var txt = document.createElement("textarea");
-        txt.innerHTML = html;
-        return txt.value;
-    }
-    
-    document.addEventListener("DOMContentLoaded", () => {
-        const queryBox = document.getElementById('search');
-        const autocomBox = document.getElementById('autocom-box');
-        const autocomItems = document.querySelectorAll('#autocom-box li');
-        const queryResultsCoverIdClient = JSON.parse('<%= queryResultsCoverIdJSON %>');
-
-        let mouseOnAutocomBox = false;
-
-        autocomBox.addEventListener('mouseover', (event) => {
-            mouseOnAutocomBox = true;
-        });
-        autocomBox.addEventListener('mouseout', (event) => {
-            mouseOnAutocomBox = false;
-        });
-        
-        <% if ( queryText != "") { %>
-            queryBox.focus();
-        <% } %>
-
-        document.addEventListener("click", (event) => {
-            if (document.activeElement !== queryBox && !mouseOnAutocomBox) {autocomBox.style.display = "none";}
-        });
-
-        queryBox.value = "<%= decodeURIComponent(queryText) %>";
-        queryBox.addEventListener('keyup', (event) => {location.href = `/?q=${encodeURIComponent(queryBox.value)}`;});
-        queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
-
-        for (let i = 0; i < autocomItems.length; i++) {
-            autocomItems[i].addEventListener("click", (event) => {
-                location.href = `/search?cover_id=${queryResultsCoverIdClient[i]}`;
-            });
-        }
-    });
-</script>
-
 <%- include("partials/footer.ejs") %>
