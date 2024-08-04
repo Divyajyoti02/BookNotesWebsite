@@ -1,6 +1,17 @@
 <%- include("partials/header.ejs") %>
 
-<div id="box">Loading...</div>
+<div id="content-container color-2">
+    <h1 class="color-1 center">Your book note entries</h1>
+    <% if (noteEntries.length === 0) { %>
+        <span class="center margin-tb">You have no entries, please create an entry by searching your favorite book.</span>
+    <% } else { %>
+        <ul>
+            <% for( let i = 0; i < noteEntries.length; i++ ) { %>
+                <li><%= noteEntries[i] %></li>
+            <% } %>
+        </ul>
+    <% } %>
+</div>
 
 <script>
     const queryBox = document.getElementById('search');

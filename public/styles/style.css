@@ -71,6 +71,12 @@ body {
     margin: 50px;
 }
 
+.margin-tb {
+    display: block;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
 .margin-lr {
     margin-left: 50px;
     margin-right: 50px;
@@ -98,6 +104,10 @@ body {
 .link-1:hover {
     color: #C75B7A;
     transition-duration: 0.2s;
+}
+
+.center {
+    text-align: center;
 }
 
 #search {
