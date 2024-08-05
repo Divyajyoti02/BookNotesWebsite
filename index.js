@@ -110,6 +110,10 @@ app.get("/edit", async (req, res) => {
     }
 });
 
+app.post("/cancel", async (req, res) => {
+    res.redirect("/entry");
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
