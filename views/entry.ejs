@@ -10,7 +10,7 @@
         <div id="description-content">
             <% if (noteEntries.length == 0) { %>
                 <p>You have not written any note.</p>
-                <button class="btn button-bg-1 margin-tb">Create a note</button>
+                <button class="btn button-bg-1 margin-tb" onclick="location.href='/edit'">Create a note</button>
             <% } else { %>
                 <p><%= noteEntries[0].description %></p>
             <% } %>
