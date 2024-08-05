@@ -34,7 +34,22 @@
         
                 queryBox.value = "<%= decodeURIComponent(queryText) %>";
                 queryBox.addEventListener('keyup', (event) => {
-                    location.href = location.href + `?q=${encodeURIComponent(queryBox.value)}`;
+                    let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
+                    let paramObj = {};
+                    let path = location.href.split('?')[0];
+
+                    for(var key of params.keys()) {paramObj[key] = params.get(key);}
+
+                    paramObj['q'] = encodeURIComponent(queryBox.value);
+                    params = new URLSearchParams();
+                    
+                    for (var prop in paramObj) {
+                        if (Object.prototype.hasOwnProperty.call(paramObj, prop)) {
+                            params.append(prop, paramObj[prop]);
+                        }
+                    }
+
+                    location.href = `${path}?${params.toString()}`;
                 });
                 queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
         
