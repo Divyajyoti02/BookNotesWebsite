@@ -1,0 +1,28 @@
+<%- include("partials/header.ejs") %>
+
+<div id="content-container" class="color-2">
+    <div class="margin-tb">
+        <h1 class="color-1 center"><%= currentBook.title %></h1>
+        <h2 class="color-2 center"><%= currentBook.author_name %></h2>
+    </div>
+    <div class="description-container">
+        <div class="img-container">
+            <img src="https://covers.openlibrary.org/b/ID/<%= currentBook.cover_i %>-L.jpg">
+        </div>
+        <div class="description-content">
+            <form action="post" class="flex-growable-column">
+                <div class="inner-description">
+                    <div class="input-group">
+                        <textarea class="form-control" placeholder="Enter your notes"></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn button-bg-1">Submit</button>
+                        <button class="btn button-bg-4">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") %>

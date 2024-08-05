@@ -85,6 +85,31 @@ app.get("/entry", async (req, res) => {
     }
 });
 
+app.get("/edit", async (req, res) => {
+    if (isEmpty(targetBook)) {
+        res.redirect("/");
+    } else {
+        let queryText = "";
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let noteEntries = response.rows;
+        let queryResults = [];
+        let queryResultsKey = [];
+
+        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
+        if (queryText !== "") {
+            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+            response.data.docs.forEach((elem) => {queryResults.push(elem);});
+        }
+
+        queryResultsGlobal = queryResults;
+
+        res.render("edit.ejs", {
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            noteEntries: noteEntries, currentBook: targetBook
+        });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

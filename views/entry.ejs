@@ -6,11 +6,11 @@
         <h2 class="color-2 center"><%= currentBook.author_name %></h2>
     </div>
     <div class="description-container">
-        <div id="img-container"><img src="https://covers.openlibrary.org/b/ID/<%= currentBook.cover_i %>-L.jpg"></div>
-        <div id="description-content">
+        <div class="img-container"><img src="https://covers.openlibrary.org/b/ID/<%= currentBook.cover_i %>-L.jpg"></div>
+        <div class="description-content">
             <% if (noteEntries.length == 0) { %>
                 <p>You have not written any note.</p>
-                <button class="btn button-bg-1 margin-tb" onclick="location.href='/edit'">Create a note</button>
+                <button class="btn button-bg-1" onclick="location.href='/edit'">Create a note</button>
             <% } else { %>
                 <p><%= noteEntries[0].description %></p>
             <% } %>
