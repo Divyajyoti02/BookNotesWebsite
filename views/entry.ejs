@@ -1,7 +1,21 @@
 <%- include("partials/header.ejs") %>
 
-<div id="content-container color-2">
-    <h1 class="color-1 center"><%= title %></h1>
+<div id="content-container" class="color-2">
+    <div class="margin-tb">
+        <h1 class="color-1 center"><%= currentBook.title %></h1>
+        <h2 class="color-2 center"><%= currentBook.author_name %></h2>
+    </div>
+    <div class="description-container">
+        <div id="img-container"><img src="https://covers.openlibrary.org/b/ID/<%= currentBook.cover_i %>-L.jpg"></div>
+        <div id="description-content">
+            <% if (noteEntries.length == 0) { %>
+                <p>You have not written any note.</p>
+                <button class="btn button-bg-1 margin-tb">Create a note</button>
+            <% } else { %>
+                <p><%= noteEntries[0].description %></p>
+            <% } %>
+        </div>
+    </div>
 </div>
 
 <%- include("partials/footer.ejs") %>

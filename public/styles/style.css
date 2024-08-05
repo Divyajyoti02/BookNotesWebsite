@@ -41,6 +41,20 @@ body {
     border-color: #921A40;
 }
 
+.button-bg-1 {
+    background-color: #921A40;
+    color: #F4D9D0;
+    border-color: #F4D9D0;
+    transition-duration: 0.2s;
+}
+
+.button-bg-1:hover {
+    background-color: #C75B7A;
+    color: #F4D9D0;
+    border-color: #F4D9D0;
+    transition-duration: 0.2s;
+}
+
 .button-bg-4 {
     background-color: #F4D9D0;
     color: #921A40;
@@ -52,13 +66,6 @@ body {
     background-color: #D9ABAB;
     color: #921A40;
     border-color: #921A40;
-    transition-duration: 0.2s;
-}
-
-.button-bg-4:focus, .button-bg-4:active {
-    background-color: #C75B7A;
-    color: #F4D9D0;
-    border-color: #F4D9D0;
     transition-duration: 0.2s;
 }
 
@@ -75,6 +82,11 @@ body {
     display: block;
     margin-top: 50px;
     margin-bottom: 50px;
+}
+
+.padding-tb {
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 .margin-lr {
@@ -138,4 +150,9 @@ body {
 
 .no-bullet > li:hover {
     background-color: lightgray;
+}
+
+.description-container {
+    display: flex;
+    gap: 50px;
 }

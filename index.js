@@ -11,14 +11,6 @@ function isEmpty(obj) {
     return true;
 }
 
-class Book {
-    constructor(book) {
-        this.book_id = book.cover_i;
-        this.title = book.title;
-        this.isbn = book.isbn;
-    }
-}
-
 let queryResultsGlobal = [];
 let targetBook = {};
 
@@ -52,9 +44,7 @@ app.get("/", async (req, res) => {
     if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
     if (queryText !== "") {
         response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-        response.data.docs.forEach((elem) => {
-            queryResults.push(new Book(elem));
-        });
+        response.data.docs.forEach((elem) => {queryResults.push(elem);});
     }
 
     queryResultsGlobal = queryResults;
@@ -75,7 +65,7 @@ app.get("/entry", async (req, res) => {
         res.redirect("/");
     } else {
         let queryText = "";
-        let response = await db.query("SELECT * FROM notes;");
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
         let queryResultsKey = [];
@@ -83,16 +73,14 @@ app.get("/entry", async (req, res) => {
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
         if (queryText !== "") {
             response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-            response.data.docs.forEach((elem) => {
-                queryResults.push(new Book(elem));
-            });
+            response.data.docs.forEach((elem) => {queryResults.push(elem);});
         }
 
         queryResultsGlobal = queryResults;
 
         res.render("entry.ejs", {
             title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
-            noteEntries: noteEntries
+            noteEntries: noteEntries, currentBook: targetBook
         });
     }
 });

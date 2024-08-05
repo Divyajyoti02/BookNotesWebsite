@@ -17,12 +17,9 @@
         
                 let mouseOnAutocomBox = false;
         
-                autocomBox.addEventListener('mouseover', (event) => {
-                    mouseOnAutocomBox = true;
-                });
-                autocomBox.addEventListener('mouseout', (event) => {
-                    mouseOnAutocomBox = false;
-                });
+                autocomBox.addEventListener('mouseover', (event) => {mouseOnAutocomBox = true;});
+
+                autocomBox.addEventListener('mouseout', (event) => {mouseOnAutocomBox = false;});
                 
                 <% if ( queryText != "") { %>
                     queryBox.focus();
@@ -33,6 +30,7 @@
                 });
         
                 queryBox.value = "<%= decodeURIComponent(queryText) %>";
+
                 queryBox.addEventListener('keyup', (event) => {
                     let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
                     let paramObj = {};
@@ -51,12 +49,11 @@
 
                     location.href = `${path}?${params.toString()}`;
                 });
+
                 queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
         
                 for (let i = 0; i < autocomItems.length; i++) {
-                    autocomItems[i].addEventListener("click", (event) => {
-                        location.href = `/query?idx=${i}`;
-                    });
+                    autocomItems[i].addEventListener("click", (event) => {location.href = `/query?idx=${i}`;});
                 }
             });
         </script>
