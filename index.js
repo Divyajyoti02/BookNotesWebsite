@@ -64,11 +64,11 @@ app.get("/entry", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
+        console.log(targetBook.author_name);
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
-        let queryResultsKey = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
         if (queryText !== "") {
@@ -113,8 +113,8 @@ app.get("/edit", async (req, res) => {
 app.post("/edit", async (req, res) => {
     const t = new Date(Date.now()).toISOString();
     let response = await db.query(
-        "INSERT INTO notes (cover_id, description, created_time, updated_time) VALUES ($1, $2, $3, $4);",
-        [targetBook.cover_i, req.body.note, t, t]
+        "INSERT INTO notes (cover_id, book_name, author, description, created_time, updated_time) VALUES ($1, $2, $3, $4, $5, $6);",
+        [targetBook.cover_i, targetBook.title, targetBook.author_name, req.body.note, t, t]
     );
     queryResultsGlobal = [];
     targetBook = {};
