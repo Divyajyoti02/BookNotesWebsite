@@ -50,7 +50,7 @@ app.get("/", async (req, res) => {
     queryResultsGlobal = queryResults;
 
     res.render("main.ejs", {
-        title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
+        title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
         noteEntries: noteEntries
     });
 });
@@ -84,7 +84,7 @@ app.get("/entry", async (req, res) => {
     }
 });
 
-app.get("/edit", async (req, res) => {
+app.get("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
@@ -102,14 +102,14 @@ app.get("/edit", async (req, res) => {
 
         queryResultsGlobal = queryResults;
 
-        res.render("edit.ejs", {
+        res.render("create.ejs", {
             title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
             noteEntries: noteEntries, currentBook: targetBook
         });
     }
 });
 
-app.post("/edit", async (req, res) => {
+app.post("/create", async (req, res) => {
     const t = new Date(Date.now()).toISOString();
     let response = await db.query(
         "INSERT INTO notes (cover_id, book_name, author, description, created_time, updated_time) VALUES ($1, $2, $3, $4, $5, $6);",
