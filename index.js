@@ -64,7 +64,6 @@ app.get("/entry", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        console.log(targetBook.author_name);
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
         let noteEntries = response.rows;

@@ -155,6 +155,16 @@ body {
 .description-container {
     display: flex;
     gap: 50px;
+    border: 2px solid #921A40;
+    border-radius: 20px;
+    padding: 20px;
+    transition-duration: 0.5s;
+}
+
+.description-container:hover {
+    transform: scale(1.05);
+    background-color: #F9ECE7;
+    transition-duration: 0.5s;
 }
 
 .description-content {

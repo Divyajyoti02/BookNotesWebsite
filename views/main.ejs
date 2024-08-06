@@ -7,11 +7,17 @@
     <% } else { %>
         <% noteEntries.forEach(noteEntry => { %>
             <div class="description-container margin-tb">
-                <div class="img-container"><img src="https://covers.openlibrary.org/b/ID/<%= noteEntry.cover_id %>-M.jpg"></div>
+                <div class="img-container">
+                    <img src="https://covers.openlibrary.org/b/ID/<%= noteEntry.cover_id %>-M.jpg">
+                </div>
                 <div class="description-content">
                     <h3 class="color-1"><%= noteEntry.book_name %></h3>
                     <h4 class="color-2 author-names"><%= noteEntry.author %></h4>
-                    <p><%= noteEntry.description %></p>
+                    <p><b>Your note:</b> <%= noteEntry.description %></p>
+                    <div class="button-group margin-tb">
+                        <button class="btn button-bg-1" formaction="/editmain">Edit</button>
+                        <button class="btn button-bg-4" formaction="/delete">Delete</button>
+                    </div>
                 </div>
             </div>
         <% }) %>
