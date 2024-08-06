@@ -5,11 +5,14 @@
     <% if (noteEntries.length === 0) { %>
         <span class="center margin-tb">You have no entries, please create an entry by searching your favorite book.</span>
     <% } else { %>
-        <ul>
-            <% for( let i = 0; i < noteEntries.length; i++ ) { %>
-                <li><%= noteEntries[i] %></li>
-            <% } %>
-        </ul>
+        <% noteEntries.forEach(noteEntry => { %>
+            <div class="description-container">
+                <div class="img-container"><img src="https://covers.openlibrary.org/b/ID/<%= noteEntry.cover_id %>-M.jpg"></div>
+                <div class="description-content">
+                    <p><%= noteEntry.description %></p>
+                </div>
+            </div>
+        <% }) %>
     <% } %>
 </div>
 
