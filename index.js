@@ -110,6 +110,17 @@ app.get("/edit", async (req, res) => {
     }
 });
 
+app.post("/edit", async (req, res) => {
+    const t = new Date(Date.now()).toISOString();
+    let response = await db.query(
+        "INSERT INTO notes (cover_id, description, created_time, updated_time) VALUES ($1, $2, $3, $4);",
+        [targetBook.cover_i, req.body.note, t, t]
+    );
+    queryResultsGlobal = [];
+    targetBook = {};
+    res.redirect("/");
+});
+
 app.post("/cancel", async (req, res) => {
     res.redirect("/entry");
 });
