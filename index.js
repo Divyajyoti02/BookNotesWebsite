@@ -94,7 +94,6 @@ app.get("/create", async (req, res) => {
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
-        let queryResultsKey = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
         if (queryText !== "") {
@@ -119,7 +118,6 @@ app.post("/create", async (req, res) => {
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
-        let queryResultsKey = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
         if (queryText !== "") {
@@ -147,6 +145,68 @@ app.post("/create", async (req, res) => {
 
 app.post("/cancel", async (req, res) => {
     res.redirect("/entry");
+});
+
+app.get("/edit", async (req, res) => {
+    if (isEmpty(targetBook)) {
+        res.redirect("/");
+    } else {
+        let queryText = "";
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let noteEntries = response.rows;
+        let queryResults = [];
+
+        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
+        if (queryText !== "") {
+            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+            response.data.docs.forEach((elem) => {queryResults.push(elem);});
+        }
+
+        queryResultsGlobal = queryResults;
+
+        res.render("edit.ejs", {
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            noteEntries: noteEntries, currentBook: targetBook, isError: false
+        });
+    }
+});
+
+app.post("/edit", async (req, res) => {
+    if (isEmpty(targetBook)) {
+        res.redirect("/");
+    } else if (isEmptyOrSpaces(req.body.note)) {
+        let queryText = "";
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let noteEntries = response.rows;
+        let queryResults = [];
+
+        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
+        if (queryText !== "") {
+            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+            response.data.docs.forEach((elem) => {queryResults.push(elem);});
+        }
+
+        queryResultsGlobal = queryResults;
+
+        res.render("edit.ejs", {
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            noteEntries: noteEntries, currentBook: targetBook, isError: true
+        });
+    } else {
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let noteEntries = response.rows;
+        const t = new Date(Date.now()).toISOString();
+        console.log(
+            `UPDATE notes SET description='${req.body.note}', updated_time = ${t} WHERE id=${noteEntries[0].id};`
+        );
+        response = await db.query(
+            "UPDATE notes SET description=$1, updated_time=$2 WHERE id=$3;",
+            [req.body.note, t, noteEntries[0].id]
+        );
+        queryResultsGlobal = [];
+        targetBook = {};
+        res.redirect("/");
+    }
 });
 
 app.listen(port, () => {

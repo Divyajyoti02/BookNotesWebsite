@@ -16,8 +16,12 @@
             <% } else { %>
                 <p class="description"><%= noteEntries[0].description %></p>
                 <div class="button-group margin-tb">
-                    <button class="btn button-bg-1" formaction="/edit">Edit</button>
-                    <button class="btn button-bg-4" formaction="/delete">Delete</button>
+                    <form>
+                        <div class="button-group">
+                            <button class="btn button-bg-1" formaction="/edit">Edit</button>
+                            <button class="btn button-bg-4" formaction="/delete">Delete</button>
+                        </div>
+                    </form>
                 </div>
             <% } %>
         </div>

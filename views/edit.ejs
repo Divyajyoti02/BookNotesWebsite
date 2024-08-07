@@ -1,0 +1,35 @@
+<%- include("partials/header.ejs") %>
+
+<div id="content-container" class="color-2">
+    <div class="margin-tb">
+        <h1 class="color-1 center"><%= currentBook.title %></h1>
+        <h2 class="color-2 center"><%= currentBook.author_name %></h2>
+    </div>
+    <div class="description-container">
+        <div class="img-container">
+            <img src="https://covers.openlibrary.org/b/ID/<%= currentBook.cover_i %>-L.jpg">
+        </div>
+        <div class="description-content">
+            <form method="post" class="flex-growable-column">
+                <div class="inner-description">
+                    <div class="full-height">
+                        <div class="form-group full-height">
+                            <textarea class="form-control" placeholder="Enter your notes" id="note-input" name="note"><%= noteEntries[0].description %></textarea>
+                        </div>
+                        <% if (isError) { %>
+                            <label for="note-input" class="form-label red-text" style="display: block;">
+                                This field cannot be empty
+                            </label>
+                        <% } %>
+                    </div>
+                    <div class="button-group">
+                        <input type="submit" class="btn button-bg-1" value="Submit">
+                        <button class="btn button-bg-4" formaction="/cancel">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") %>
