@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
     let queryText = "";
-    let response = await db.query("SELECT * FROM notes;");
+    let response = await db.query("SELECT * FROM notes ORDER BY id;");
     let noteEntries = response.rows;
     let queryResults = [];
 
@@ -77,7 +77,7 @@ app.get("/entry", async (req, res) => {
         res.redirect("/");
     } else {
         let queryText = "";
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
 
@@ -101,7 +101,7 @@ app.get("/create", async (req, res) => {
         res.redirect("/");
     } else {
         let queryText = "";
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
 
@@ -125,7 +125,7 @@ app.post("/create", async (req, res) => {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
         let queryText = "";
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
 
@@ -163,7 +163,7 @@ app.get("/edit", async (req, res) => {
         res.redirect("/");
     } else {
         let queryText = "";
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
 
@@ -187,7 +187,7 @@ app.post("/edit", async (req, res) => {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
         let queryText = "";
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         let queryResults = [];
 
@@ -204,7 +204,7 @@ app.post("/edit", async (req, res) => {
             noteEntries: noteEntries, currentBook: targetBook, isError: true
         });
     } else {
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         const t = new Date(Date.now()).toISOString();
 
@@ -220,7 +220,7 @@ app.post("/edit", async (req, res) => {
 
 app.get("/editmain", async (req, res) => {
     let noteEntry = noteEntriesGlobal[req.query.idx];
-    
+
     targetBook = new Book(noteEntry.cover_id, noteEntry.book_name, noteEntry.author);
     res.redirect("/edit");
 });
