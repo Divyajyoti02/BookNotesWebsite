@@ -13,8 +13,17 @@ function isEmpty(obj) {
 
 function isEmptyOrSpaces(str) {return str === null || str.match(/^ *$/) !== null;}
 
+class Book {
+    constructor(cover_id, book_name, author) {
+        this.cover_i = cover_id;
+        this.title = book_name;
+        this.author_name = JSON.parse(`[${author.substring(1, author.length - 1)}]`);
+    }
+}
+
 let queryResultsGlobal = [];
 let targetBook = {};
+let noteEntriesGlobal = [];
 
 config();
 
@@ -50,6 +59,7 @@ app.get("/", async (req, res) => {
     }
 
     queryResultsGlobal = queryResults;
+    noteEntriesGlobal = noteEntries;
 
     res.render("main.ejs", {
         title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
@@ -137,6 +147,7 @@ app.post("/create", async (req, res) => {
             "INSERT INTO notes (cover_id, book_name, author, description, created_time, updated_time) VALUES ($1, $2, $3, $4, $5, $6);",
             [targetBook.cover_i, targetBook.title, targetBook.author_name, req.body.note, t, t]
         );
+
         queryResultsGlobal = [];
         targetBook = {};
         res.redirect("/");
@@ -196,9 +207,7 @@ app.post("/edit", async (req, res) => {
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
         let noteEntries = response.rows;
         const t = new Date(Date.now()).toISOString();
-        console.log(
-            `UPDATE notes SET description='${req.body.note}', updated_time = ${t} WHERE id=${noteEntries[0].id};`
-        );
+
         response = await db.query(
             "UPDATE notes SET description=$1, updated_time=$2 WHERE id=$3;",
             [req.body.note, t, noteEntries[0].id]
@@ -207,6 +216,13 @@ app.post("/edit", async (req, res) => {
         targetBook = {};
         res.redirect("/");
     }
+});
+
+app.get("/editmain", async (req, res) => {
+    let noteEntry = noteEntriesGlobal[req.query.idx];
+    
+    targetBook = new Book(noteEntry.cover_id, noteEntry.book_name, noteEntry.author);
+    res.redirect("/edit");
 });
 
 app.listen(port, () => {
