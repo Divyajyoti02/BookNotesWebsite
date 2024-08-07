@@ -11,6 +11,8 @@ function isEmpty(obj) {
     return true;
 }
 
+function isEmptyOrSpaces(str) {return str === null || str.match(/^ *$/) !== null;}
+
 let queryResultsGlobal = [];
 let targetBook = {};
 
@@ -104,20 +106,43 @@ app.get("/create", async (req, res) => {
 
         res.render("create.ejs", {
             title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
-            noteEntries: noteEntries, currentBook: targetBook
+            noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     }
 });
 
 app.post("/create", async (req, res) => {
-    const t = new Date(Date.now()).toISOString();
-    let response = await db.query(
-        "INSERT INTO notes (cover_id, book_name, author, description, created_time, updated_time) VALUES ($1, $2, $3, $4, $5, $6);",
-        [targetBook.cover_i, targetBook.title, targetBook.author_name, req.body.note, t, t]
-    );
-    queryResultsGlobal = [];
-    targetBook = {};
-    res.redirect("/");
+    if (isEmpty(targetBook)) {
+        res.redirect("/");
+    } else if (isEmptyOrSpaces(req.body.note)) {
+        let queryText = "";
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1;", [targetBook.cover_i]);
+        let noteEntries = response.rows;
+        let queryResults = [];
+        let queryResultsKey = [];
+
+        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
+        if (queryText !== "") {
+            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+            response.data.docs.forEach((elem) => {queryResults.push(elem);});
+        }
+
+        queryResultsGlobal = queryResults;
+
+        res.render("create.ejs", {
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            noteEntries: noteEntries, currentBook: targetBook, isError: true
+        });
+    } else {
+        const t = new Date(Date.now()).toISOString();
+        let response = await db.query(
+            "INSERT INTO notes (cover_id, book_name, author, description, created_time, updated_time) VALUES ($1, $2, $3, $4, $5, $6);",
+            [targetBook.cover_i, targetBook.title, targetBook.author_name, req.body.note, t, t]
+        );
+        queryResultsGlobal = [];
+        targetBook = {};
+        res.redirect("/");
+    }
 });
 
 app.post("/cancel", async (req, res) => {

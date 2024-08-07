@@ -3,7 +3,9 @@
 <div id="content-container color-2">
     <h1 class="color-1 center">Your book note entries</h1>
     <% if (noteEntries.length === 0) { %>
-        <span class="center margin-tb">You have no entries, please create an entry by searching your favorite book.</span>
+        <span class="center margin-tb">
+            You have no entries, please create an entry by searching your favorite book.
+        </span>
     <% } else { %>
         <% noteEntries.forEach(noteEntry => { %>
             <div class="description-container margin-tb">
@@ -13,7 +15,7 @@
                 <div class="description-content">
                     <h3 class="color-1"><%= noteEntry.book_name %></h3>
                     <h4 class="color-2 author-names"><%= noteEntry.author %></h4>
-                    <p><b>Your note:</b> <%= noteEntry.description %></p>
+                    <p><b>Your note:<br></b> <span class="description"><%= noteEntry.description %></span></p>
                     <div class="button-group margin-tb">
                         <button class="btn button-bg-1" formaction="/editmain">Edit</button>
                         <button class="btn button-bg-4" formaction="/delete">Delete</button>

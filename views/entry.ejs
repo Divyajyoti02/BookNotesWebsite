@@ -14,7 +14,7 @@
                 <p>You have not written any note.</p>
                 <button class="btn button-bg-1" onclick="location.href='/create'">Create a note</button>
             <% } else { %>
-                <p><%= noteEntries[0].description %></p>
+                <p class="description"><%= noteEntries[0].description %></p>
                 <div class="button-group margin-tb">
                     <button class="btn button-bg-1" formaction="/editmain">Edit</button>
                     <button class="btn button-bg-4" formaction="/delete">Delete</button>

@@ -12,8 +12,15 @@
         <div class="description-content">
             <form method="post" class="flex-growable-column">
                 <div class="inner-description">
-                    <div class="input-group">
-                        <textarea class="form-control" placeholder="Enter your notes" name="note" required></textarea>
+                    <div class="full-height">
+                        <div class="form-group full-height">
+                            <textarea class="form-control" placeholder="Enter your notes" id="note-input" name="note"></textarea>
+                        </div>
+                        <% if (isError) { %>
+                            <label for="note-input" class="form-label red-text" style="display: block;">
+                                This field cannot be empty
+                            </label>
+                        <% } %>
                     </div>
                     <div class="button-group">
                         <input type="submit" class="btn button-bg-1" value="Submit">
