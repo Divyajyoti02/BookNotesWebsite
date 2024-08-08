@@ -13,6 +13,17 @@ function isEmpty(obj) {
 
 function isEmptyOrSpaces(str) {return str === null || str.match(/^ *$/) !== null;}
 
+async function queryProcess(queryText) {
+    let queryResults = [];
+
+    if (queryText !== "") {
+        let response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
+        response.data.docs.forEach((elem) => {queryResults.push(elem);});
+    }
+
+    return queryResults;
+}
+
 class Book {
     constructor(cover_id, book_name, author) {
         this.cover_i = cover_id;
@@ -50,15 +61,10 @@ app.get("/", async (req, res) => {
     let queryText = "";
     let response = await db.query("SELECT * FROM notes ORDER BY id;");
     let noteEntries = response.rows;
-    let queryResults = [];
 
     if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
-    if (queryText !== "") {
-        response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-        response.data.docs.forEach((elem) => {queryResults.push(elem);});
-    }
 
-    queryResultsGlobal = queryResults;
+    queryResultsGlobal = await queryProcess(queryText);
     noteEntriesGlobal = noteEntries;
 
     res.render("main.ejs", {
@@ -79,18 +85,13 @@ app.get("/entry", async (req, res) => {
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-        let queryResults = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
-        if (queryText !== "") {
-            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-            response.data.docs.forEach((elem) => {queryResults.push(elem);});
-        }
 
-        queryResultsGlobal = queryResults;
+        queryResultsGlobal = await queryProcess(queryText);
 
         res.render("entry.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
             noteEntries: noteEntries, currentBook: targetBook
         });
     }
@@ -103,18 +104,13 @@ app.get("/create", async (req, res) => {
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-        let queryResults = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
-        if (queryText !== "") {
-            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-            response.data.docs.forEach((elem) => {queryResults.push(elem);});
-        }
 
-        queryResultsGlobal = queryResults;
+        queryResultsGlobal = await queryProcess(queryText);
 
         res.render("create.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
             noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     }
@@ -127,18 +123,13 @@ app.post("/create", async (req, res) => {
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-        let queryResults = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
-        if (queryText !== "") {
-            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-            response.data.docs.forEach((elem) => {queryResults.push(elem);});
-        }
 
-        queryResultsGlobal = queryResults;
+        queryResultsGlobal = await queryProcess(queryText);
 
         res.render("create.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
             noteEntries: noteEntries, currentBook: targetBook, isError: true
         });
     } else {
@@ -165,18 +156,13 @@ app.get("/edit", async (req, res) => {
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-        let queryResults = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
-        if (queryText !== "") {
-            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-            response.data.docs.forEach((elem) => {queryResults.push(elem);});
-        }
 
-        queryResultsGlobal = queryResults;
+        queryResultsGlobal = await queryProcess(queryText);
 
         res.render("edit.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
             noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     }
@@ -189,18 +175,13 @@ app.post("/edit", async (req, res) => {
         let queryText = "";
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-        let queryResults = [];
 
         if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
-        if (queryText !== "") {
-            response = await axios.get(`https://openlibrary.org/search.json?q=${queryText}&limit=5`);
-            response.data.docs.forEach((elem) => {queryResults.push(elem);});
-        }
 
-        queryResultsGlobal = queryResults;
+        queryResultsGlobal = await queryProcess(queryText);
 
         res.render("edit.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResults, 
+            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
             noteEntries: noteEntries, currentBook: targetBook, isError: true
         });
     } else {
@@ -225,6 +206,4 @@ app.get("/editmain", async (req, res) => {
     res.redirect("/edit");
 });
 
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+app.listen(port, () => {console.log(`Server running on port ${port}`);});
