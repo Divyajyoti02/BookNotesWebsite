@@ -135,6 +135,7 @@ app.post("/create", async (req, res) => {
 
         queryResultsGlobal = [];
         targetBook = {};
+        
         res.redirect("/");
     }
 });
@@ -183,8 +184,10 @@ app.post("/edit", async (req, res) => {
             "UPDATE notes SET description=$1, updated_time=$2 WHERE id=$3;",
             [req.body.note, t, noteEntries[0].id]
         );
+
         queryResultsGlobal = [];
         targetBook = {};
+
         res.redirect("/");
     }
 });
@@ -193,8 +196,21 @@ app.get("/editmain", async (req, res) => {
     let noteEntry = noteEntriesGlobal[req.query.idx];
 
     targetBook = new Book(noteEntry.cover_id, noteEntry.book_name, noteEntry.author);
-    
+
     res.redirect("/edit");
+});
+
+app.post("/delete", async (req, res) => {
+    if (!isEmpty(targetBook)) {
+        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
+        let noteEntries = response.rows;
+
+        response = await db.query("DELETE FROM notes WHERE id=$1;", [noteEntries[0].id]);
+
+        queryResultsGlobal = [];
+        targetBook = {};
+    }
+    res.redirect("/");
 });
 
 app.listen(port, () => {console.log(`Server running on port ${port}`);});
