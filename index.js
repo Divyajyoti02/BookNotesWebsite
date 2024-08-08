@@ -13,6 +13,8 @@ function isEmpty(obj) {
 
 function isEmptyOrSpaces(str) {return str === null || str.match(/^ *$/) !== null;}
 
+function extractQ(req) {if (Object.hasOwn(req.query, 'q')) {return req.query.q;} else {return "";}}
+
 async function queryProcess(queryText) {
     let queryResults = [];
 
@@ -58,11 +60,9 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-    let queryText = "";
+    let queryText = extractQ(req);
     let response = await db.query("SELECT * FROM notes ORDER BY id;");
     let noteEntries = response.rows;
-
-    if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
 
     queryResultsGlobal = await queryProcess(queryText);
     noteEntriesGlobal = noteEntries;
@@ -82,11 +82,9 @@ app.get("/entry", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let queryText = "";
+        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-
-        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
 
         queryResultsGlobal = await queryProcess(queryText);
 
@@ -101,11 +99,9 @@ app.get("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let queryText = "";
+        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-
-        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
 
         queryResultsGlobal = await queryProcess(queryText);
 
@@ -120,11 +116,9 @@ app.post("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
-        let queryText = "";
+        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-
-        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
 
         queryResultsGlobal = await queryProcess(queryText);
 
@@ -153,11 +147,9 @@ app.get("/edit", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let queryText = "";
+        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-
-        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
 
         queryResultsGlobal = await queryProcess(queryText);
 
@@ -172,11 +164,9 @@ app.post("/edit", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
-        let queryText = "";
+        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
-
-        if (Object.hasOwn(req.query, 'q')) {queryText = req.query.q;}
 
         queryResultsGlobal = await queryProcess(queryText);
 
@@ -203,6 +193,7 @@ app.get("/editmain", async (req, res) => {
     let noteEntry = noteEntriesGlobal[req.query.idx];
 
     targetBook = new Book(noteEntry.cover_id, noteEntry.book_name, noteEntry.author);
+    
     res.redirect("/edit");
 });
 
