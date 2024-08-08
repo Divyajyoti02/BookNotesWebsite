@@ -213,4 +213,12 @@ app.post("/delete", async (req, res) => {
     res.redirect("/");
 });
 
+app.post("/deletemain", async (req, res) => {
+    let noteEntry = noteEntriesGlobal[req.query.idx];
+
+    targetBook = new Book(noteEntry.cover_id, noteEntry.book_name, noteEntry.author);
+
+    res.redirect(307, "/delete");
+});
+
 app.listen(port, () => {console.log(`Server running on port ${port}`);});
