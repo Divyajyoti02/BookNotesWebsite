@@ -13,7 +13,9 @@
             document.addEventListener("DOMContentLoaded", () => {
                 const queryBox = document.getElementById('search');
                 const autocomBox = document.getElementById('autocom-box');
-                const autocomItems = document.querySelectorAll('#autocom-box li');
+                const autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
+                const loader = document.getElementsByClassName('loader')[0];
+                const loaderParent = document.getElementsByClassName('loader-parent')[0];
         
                 let mouseOnAutocomBox = false;
         
@@ -32,6 +34,10 @@
                 queryBox.value = "<%= decodeURIComponent(queryText) %>";
 
                 queryBox.addEventListener('keyup', (event) => {
+                    loaderParent.classList.remove("hidden");
+                    loader.classList.remove("loader-hidden");
+                    Array.prototype.forEach.call(autocomItems, (item) => {item.classList.add("hidden");});
+
                     let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
                     let paramObj = {};
                     let path = location.href.split('?')[0];
@@ -55,6 +61,12 @@
                 for (let i = 0; i < autocomItems.length; i++) {
                     autocomItems[i].addEventListener("click", (event) => {location.href = `/query?idx=${i}`;});
                 }
+
+                loader.classList.add("loader-hidden");
+
+                loader.addEventListener("transitionend", () => {
+                    loaderParent.classList.add("hidden");
+                });
             });
         </script>
     </body>

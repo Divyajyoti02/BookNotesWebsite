@@ -33,8 +33,9 @@
                             <div id="autocom-box">
                                 <ul class="no-bullet">
                                     <% queryResults.forEach(element => { %>
-                                        <li><%= element.title %></li>
+                                        <li class="autocom-li"><%= element.title %></li>
                                     <% }) %>
+                                    <li class="loader-parent"><div class="loader"></div></li>
                                 </ul>
                             </div>
                         </div>

@@ -139,7 +139,7 @@ body {
     padding: 0;
 }
 
-.no-bullet > li {
+.no-bullet > .autocom-li {
     padding-left: 12px;
     padding-right: 12px;
     padding-top: 6px;
@@ -148,7 +148,7 @@ body {
     cursor: pointer;
 }
 
-.no-bullet > li:hover {
+.no-bullet > .autocom-li:hover {
     background-color: lightgray;
 }
 
@@ -219,4 +219,38 @@ form {
 
 .description {
     white-space: pre-wrap;
+}
+
+.loader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader::after {
+    content: "";
+    width: 75px;
+    height: 75px;
+    border: 10px solid #DDDDDD;
+    border-top-color: #921A40;
+    border-radius: 50%;
+    animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading {
+    from {
+        transform: rotate(0turn);
+    }
+    to {
+        transform: rotate(1turn);
+    }
 }

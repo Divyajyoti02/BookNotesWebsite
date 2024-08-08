@@ -210,6 +210,7 @@ app.post("/delete", async (req, res) => {
         queryResultsGlobal = [];
         targetBook = {};
     }
+    
     res.redirect("/");
 });
 
