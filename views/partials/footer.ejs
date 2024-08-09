@@ -34,26 +34,28 @@
                 queryBox.value = "<%= decodeURIComponent(queryText) %>";
 
                 queryBox.addEventListener('keyup', (event) => {
-                    loaderParent.classList.remove("hidden");
-                    loader.classList.remove("loader-hidden");
-                    Array.prototype.forEach.call(autocomItems, (item) => {item.classList.add("hidden");});
+                    if (event.which <= 90 && event.which >= 48 || event.which >= 96 && event.which <= 105) {
+                        loaderParent.classList.remove("hidden");
+                        loader.classList.remove("loader-hidden");
+                        Array.prototype.forEach.call(autocomItems, (item) => {item.classList.add("hidden");});
 
-                    let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
-                    let paramObj = {};
-                    let path = location.href.split('?')[0];
+                        let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
+                        let paramObj = {};
+                        let path = location.href.split('?')[0];
 
-                    for(var key of params.keys()) {paramObj[key] = params.get(key);}
+                        for(var key of params.keys()) {paramObj[key] = params.get(key);}
 
-                    paramObj['q'] = encodeURIComponent(queryBox.value);
-                    params = new URLSearchParams();
-                    
-                    for (var prop in paramObj) {
-                        if (Object.prototype.hasOwnProperty.call(paramObj, prop)) {
-                            params.append(prop, paramObj[prop]);
+                        paramObj['q'] = encodeURIComponent(queryBox.value);
+                        params = new URLSearchParams();
+                        
+                        for (var prop in paramObj) {
+                            if (Object.prototype.hasOwnProperty.call(paramObj, prop)) {
+                                params.append(prop, paramObj[prop]);
+                            }
                         }
-                    }
 
-                    location.href = `${path}?${params.toString()}`;
+                        location.href = `${path}?${params.toString()}`;
+                    }
                 });
 
                 queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
