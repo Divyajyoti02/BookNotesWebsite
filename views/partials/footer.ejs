@@ -22,6 +22,7 @@
                 let mouseOnAutocomBox = false;
                 let autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
                 let queryResultsClient;
+                let semaphore = 0;
         
                 autocomBox.addEventListener('mouseover', (event) => {mouseOnAutocomBox = true;});
 
@@ -33,9 +34,10 @@
 
                 queryBox.addEventListener('keyup', async (event) => {
                     if (event.which <= 127 && event.which >= 32 || event.which == 8) {
+                        semaphore++;
                         loaderParent.classList.remove("hidden");
                         loader.classList.remove("loader-hidden");
-                        Array.prototype.forEach.call(autocomItems, (item) => {autocomUl.removeChild(item)});
+                        Array.prototype.forEach.call(autocomItems, (item) => {item.classList.add("hidden");});
 
                         let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
                         let paramObj = {};
@@ -52,23 +54,34 @@
                             }
                         }
 
+                        console.log(queryBox.value);
+
                         queryResultsClient = JSON.parse((await axios.get(`/search?${params.toString()}`)).data);
-                        Array.prototype.forEach.call(queryResultsClient, (item) => {
-                            let liElement = document.createElement('li');
-                            let liText = document.createTextNode(item.title);
-                            liElement.appendChild(liText);
-                            liElement.setAttribute('class', 'autocom-li');
-                            autocomUl.appendChild(liElement);
-                        });
+
+                        autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
+                        if (autocomItems.length == 0) {
+                            Array.prototype.forEach.call(queryResultsClient, (item) => {
+                                let liElement = document.createElement('li');
+                                let liText = document.createTextNode(item.title);
+                                liElement.appendChild(liText);
+                                liElement.setAttribute('class', 'autocom-li');
+                                autocomUl.appendChild(liElement);
+                            });
+                        } else {for (let i = 0; i < 5; i++) {autocomItems[i].innerHTML = queryResultsClient[i].title;}}
 
                         autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
 
-                        for (let i = 0; i < autocomItems.length; i++) {
+                        for (let i = 0; i < 5; i++) {
+                            autocomItems[i].classList.remove("hidden");
                             autocomItems[i].addEventListener("click", (event) => {location.href = `/query?idx=${i}`;});
                         }
 
-                        loader.classList.add("loader-hidden");
-                        loaderParent.classList.add("hidden");
+                        semaphore--;
+
+                        if (semaphore == 0) {
+                            loader.classList.add("loader-hidden");
+                            loaderParent.classList.add("hidden");
+                        }
                     }
                 });
 

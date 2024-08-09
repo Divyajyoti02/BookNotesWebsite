@@ -83,7 +83,7 @@ app.get("/entry", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        res.render("entry.ejs", {title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook});
+        res.render("entry.ejs", {title: targetBook.title, noteEntries: noteEntriesGlobal, currentBook: targetBook});
     }
 });
 
