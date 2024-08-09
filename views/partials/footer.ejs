@@ -22,7 +22,23 @@
                 let mouseOnAutocomBox = false;
                 let autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
                 let queryResultsClient;
-                let semaphore = 0;
+                let semaphores = {};
+
+                let semaphoreProxy = new Proxy(semaphores, {
+                    set: (target, key, value) => {
+                        target[key] = value;
+                        if (value <= 0) {
+                            loader.classList.add("loader-hidden");
+                            loaderParent.classList.add("hidden");
+                        } else {
+                            loader.classList.remove("loader-hidden");
+                            loaderParent.classList.remove("hidden");
+                        }
+                        return true;
+                    }
+                });
+
+                semaphoreProxy.a = 0;
         
                 autocomBox.addEventListener('mouseover', (event) => {mouseOnAutocomBox = true;});
 
@@ -32,11 +48,16 @@
                     if (document.activeElement !== queryBox && !mouseOnAutocomBox) {autocomBox.style.display = "none";}
                 });
 
+                document.addEventListener("keydown", (event) => {
+                    if (event.keyCode == 13) {
+                        event.preventDefault();
+                        return false;
+                    }
+                })
+
                 queryBox.addEventListener('keyup', async (event) => {
                     if (event.which <= 127 && event.which >= 32 || event.which == 8) {
-                        semaphore++;
-                        loaderParent.classList.remove("hidden");
-                        loader.classList.remove("loader-hidden");
+                        semaphoreProxy.a += 1;
                         Array.prototype.forEach.call(autocomItems, (item) => {item.classList.add("hidden");});
 
                         let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
@@ -53,8 +74,6 @@
                                 params.append(prop, paramObj[prop]);
                             }
                         }
-
-                        console.log(queryBox.value);
 
                         queryResultsClient = JSON.parse((await axios.get(`/search?${params.toString()}`)).data);
 
@@ -76,23 +95,11 @@
                             autocomItems[i].addEventListener("click", (event) => {location.href = `/query?idx=${i}`;});
                         }
 
-                        semaphore--;
-
-                        if (semaphore == 0) {
-                            loader.classList.add("loader-hidden");
-                            loaderParent.classList.add("hidden");
-                        }
+                        semaphoreProxy.a -= 1;
                     }
                 });
 
                 queryBox.addEventListener('focusin', (event) => {autocomBox.style.display = "block";});
-        
-                for (let i = 0; i < autocomItems.length; i++) {
-                    autocomItems[i].addEventListener("click", (event) => {location.href = `/query?idx=${i}`;});
-                }
-
-                loader.classList.add("loader-hidden");
-                loaderParent.classList.add("hidden");
             });
         </script>
     </body>
