@@ -32,7 +32,7 @@
                 });
 
                 queryBox.addEventListener('keyup', async (event) => {
-                    if (event.which <= 90 && event.which >= 48 || event.which >= 96 && event.which <= 105) {
+                    if (event.which <= 127 && event.which >= 32 || event.which == 8) {
                         loaderParent.classList.remove("hidden");
                         loader.classList.remove("loader-hidden");
                         Array.prototype.forEach.call(autocomItems, (item) => {autocomUl.removeChild(item)});

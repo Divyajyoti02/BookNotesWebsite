@@ -68,11 +68,10 @@ app.get("/search", async (req, res) => {
 
 app.get("/", async (req, res) => {
     let response = await db.query("SELECT * FROM notes ORDER BY id;");
-    let noteEntries = response.rows;
 
-    noteEntriesGlobal = noteEntries;
+    noteEntriesGlobal = response.rows;
 
-    res.render("main.ejs", {title: "Book Notes", noteEntries: noteEntries});
+    res.render("main.ejs", {title: "Book Notes", noteEntries: noteEntriesGlobal});
 });
 
 app.get("/query", async (req, res) => {
@@ -84,9 +83,6 @@ app.get("/entry", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
-        let noteEntries = response.rows;
-
         res.render("entry.ejs", {title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook});
     }
 });
@@ -95,12 +91,7 @@ app.get("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
-        let noteEntries = response.rows;
-
-        res.render("create.ejs", {
-            title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook, isError: false
-        });
+        res.render("create.ejs", {title: targetBook.title, currentBook: targetBook, isError: false});
     }
 });
 
@@ -108,12 +99,7 @@ app.post("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
-        let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
-        let noteEntries = response.rows;
-
-        res.render("create.ejs", {
-            title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook, isError: false
-        });
+        res.render("create.ejs", {title: targetBook.title, currentBook: targetBook, isError: false});
     } else {
         const t = new Date(Date.now()).toISOString();
         let response = await db.query(
