@@ -13,8 +13,6 @@ function isEmpty(obj) {
 
 function isEmptyOrSpaces(str) {return str === null || str.match(/^ *$/) !== null;}
 
-function extractQ(req) {if (Object.hasOwn(req.query, 'q')) {return req.query.q;} else {return "";}}
-
 async function queryProcess(queryText) {
     let queryResults = [];
 
@@ -44,11 +42,15 @@ const app = express();
 const port = Number(process.env.MAIN_PORT);
 
 const db = new pg.Client({
-  user: process.env.DB_USERNAME,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+    user: process.env.DB_USERNAME,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: true,
+        ca: process.env.CA
+    }
 });
 
 db.connect();
