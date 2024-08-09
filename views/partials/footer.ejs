@@ -3,6 +3,8 @@
             <footer class="margin-lr color-2" id="footer">Copyright © 2024 Divyajyoti Panda</footer>
         </div>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
         <script>
             function decodeHtml(html) {
                 var txt = document.createElement("textarea");
@@ -13,31 +15,27 @@
             document.addEventListener("DOMContentLoaded", () => {
                 const queryBox = document.getElementById('search');
                 const autocomBox = document.getElementById('autocom-box');
-                const autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
                 const loader = document.getElementsByClassName('loader')[0];
                 const loaderParent = document.getElementsByClassName('loader-parent')[0];
-        
+                const autocomUl = document.getElementsByClassName('no-bullet')[0];
+
                 let mouseOnAutocomBox = false;
+                let autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
+                let queryResultsClient;
         
                 autocomBox.addEventListener('mouseover', (event) => {mouseOnAutocomBox = true;});
 
                 autocomBox.addEventListener('mouseout', (event) => {mouseOnAutocomBox = false;});
-                
-                <% if ( queryText != "") { %>
-                    queryBox.focus();
-                <% } %>
         
                 document.addEventListener("click", (event) => {
                     if (document.activeElement !== queryBox && !mouseOnAutocomBox) {autocomBox.style.display = "none";}
                 });
-        
-                queryBox.value = "<%= decodeURIComponent(queryText) %>";
 
-                queryBox.addEventListener('keyup', (event) => {
+                queryBox.addEventListener('keyup', async (event) => {
                     if (event.which <= 90 && event.which >= 48 || event.which >= 96 && event.which <= 105) {
                         loaderParent.classList.remove("hidden");
                         loader.classList.remove("loader-hidden");
-                        Array.prototype.forEach.call(autocomItems, (item) => {item.classList.add("hidden");});
+                        Array.prototype.forEach.call(autocomItems, (item) => {autocomUl.removeChild(item)});
 
                         let params = new URLSearchParams((location.href.split(/\?(.*)/s))[1]);
                         let paramObj = {};
@@ -54,7 +52,23 @@
                             }
                         }
 
-                        location.href = `${path}?${params.toString()}`;
+                        queryResultsClient = JSON.parse((await axios.get(`/search?${params.toString()}`)).data);
+                        Array.prototype.forEach.call(queryResultsClient, (item) => {
+                            let liElement = document.createElement('li');
+                            let liText = document.createTextNode(item.title);
+                            liElement.appendChild(liText);
+                            liElement.setAttribute('class', 'autocom-li');
+                            autocomUl.appendChild(liElement);
+                        });
+
+                        autocomItems = document.querySelectorAll('#autocom-box .autocom-li');
+
+                        for (let i = 0; i < autocomItems.length; i++) {
+                            autocomItems[i].addEventListener("click", (event) => {location.href = `/query?idx=${i}`;});
+                        }
+
+                        loader.classList.add("loader-hidden");
+                        loaderParent.classList.add("hidden");
                     }
                 });
 
@@ -65,10 +79,7 @@
                 }
 
                 loader.classList.add("loader-hidden");
-
-                loader.addEventListener("transitionend", () => {
-                    loaderParent.classList.add("hidden");
-                });
+                loaderParent.classList.add("hidden");
             });
         </script>
     </body>

@@ -59,18 +59,20 @@ const __dirname = dirname(__filename);
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/search", async (req, res) => {
+    let response = await queryProcess(req.query.q);
+    queryResultsGlobal = response;
+
+    res.json(JSON.stringify(response));
+});
+
 app.get("/", async (req, res) => {
-    let queryText = extractQ(req);
     let response = await db.query("SELECT * FROM notes ORDER BY id;");
     let noteEntries = response.rows;
 
-    queryResultsGlobal = await queryProcess(queryText);
     noteEntriesGlobal = noteEntries;
 
-    res.render("main.ejs", {
-        title: "Book Notes", activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
-        noteEntries: noteEntries
-    });
+    res.render("main.ejs", {title: "Book Notes", noteEntries: noteEntries});
 });
 
 app.get("/query", async (req, res) => {
@@ -82,16 +84,10 @@ app.get("/entry", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
 
-        queryResultsGlobal = await queryProcess(queryText);
-
-        res.render("entry.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
-            noteEntries: noteEntries, currentBook: targetBook
-        });
+        res.render("entry.ejs", {title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook});
     }
 });
 
@@ -99,15 +95,11 @@ app.get("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
 
-        queryResultsGlobal = await queryProcess(queryText);
-
         res.render("create.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
-            noteEntries: noteEntries, currentBook: targetBook, isError: false
+            title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     }
 });
@@ -116,15 +108,11 @@ app.post("/create", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
-        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
 
-        queryResultsGlobal = await queryProcess(queryText);
-
         res.render("create.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
-            noteEntries: noteEntries, currentBook: targetBook, isError: true
+            title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     } else {
         const t = new Date(Date.now()).toISOString();
@@ -148,15 +136,11 @@ app.get("/edit", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else {
-        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
 
-        queryResultsGlobal = await queryProcess(queryText);
-
         res.render("edit.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
-            noteEntries: noteEntries, currentBook: targetBook, isError: false
+            title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     }
 });
@@ -165,15 +149,11 @@ app.post("/edit", async (req, res) => {
     if (isEmpty(targetBook)) {
         res.redirect("/");
     } else if (isEmptyOrSpaces(req.body.note)) {
-        let queryText = extractQ(req);
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
         let noteEntries = response.rows;
 
-        queryResultsGlobal = await queryProcess(queryText);
-
         res.render("edit.ejs", {
-            title: targetBook.title, activeTab: "home", queryText: queryText, queryResults: queryResultsGlobal, 
-            noteEntries: noteEntries, currentBook: targetBook, isError: true
+            title: targetBook.title, noteEntries: noteEntries, currentBook: targetBook, isError: false
         });
     } else {
         let response = await db.query("SELECT * FROM notes WHERE cover_id=$1 ORDER BY id;", [targetBook.cover_i]);
@@ -210,7 +190,7 @@ app.post("/delete", async (req, res) => {
         queryResultsGlobal = [];
         targetBook = {};
     }
-    
+
     res.redirect("/");
 });
 

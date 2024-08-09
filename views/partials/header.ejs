@@ -33,13 +33,10 @@
                         </ul>
                         <div class="margin-left-tiny">
                             <form class="form-inline input-group">
-                                <input class="form-control mr-sm-2" id="search" type="search" placeholder="Search" aria-label="Search">
+                                <input class="form-control mr-sm-2" id="search" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
                             </form>
                             <div id="autocom-box">
                                 <ul class="no-bullet">
-                                    <% queryResults.forEach(element => { %>
-                                        <li class="autocom-li"><%= element.title %></li>
-                                    <% }) %>
                                     <li class="loader-parent"><div class="loader"></div></li>
                                 </ul>
                             </div>
